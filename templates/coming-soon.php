@@ -22,31 +22,31 @@ $logo_url = has_custom_logo() ? wp_get_attachment_image_src(get_theme_mod('custo
     <style>
         @font-face {
             font-family: 'Vazir';
-            src: url('<?php echo esc_url(SOONIFY_PLUGIN_URL . 'assets/fonts/Vazir-Thin.woff2'); ?>') format('woff2');
+            src: url('<?php echo esc_url(SOONIFY_PLUGIN_URL . 'assets/fonts/Vazirmatn-Thin.woff2'); ?>') format('woff2');
             font-weight: 100;
             font-style: normal;
         }
         @font-face {
             font-family: 'Vazir';
-            src: url('<?php echo esc_url(SOONIFY_PLUGIN_URL . 'assets/fonts/Vazir-Light.woff2'); ?>') format('woff2');
+            src: url('<?php echo esc_url(SOONIFY_PLUGIN_URL . 'assets/fonts/Vazirmatn-Light.woff2'); ?>') format('woff2');
             font-weight: 300;
             font-style: normal;
         }
         @font-face {
             font-family: 'Vazir';
-            src: url('<?php echo esc_url(SOONIFY_PLUGIN_URL . 'assets/fonts/Vazir-Regular.woff2'); ?>') format('woff2');
+            src: url('<?php echo esc_url(SOONIFY_PLUGIN_URL . 'assets/fonts/Vazirmatn-Regular.woff2'); ?>') format('woff2');
             font-weight: 400;
             font-style: normal;
         }
         @font-face {
             font-family: 'Vazir';
-            src: url('<?php echo esc_url(SOONIFY_PLUGIN_URL . 'assets/fonts/Vazir-Medium.woff2'); ?>') format('woff2');
+            src: url('<?php echo esc_url(SOONIFY_PLUGIN_URL . 'assets/fonts/Vazirmatn-Medium.woff2'); ?>') format('woff2');
             font-weight: 500;
             font-style: normal;
         }
         @font-face {
             font-family: 'Vazir';
-            src: url('<?php echo esc_url(SOONIFY_PLUGIN_URL . 'assets/fonts/Vazir-Bold.woff2'); ?>') format('woff2');
+            src: url('<?php echo esc_url(SOONIFY_PLUGIN_URL . 'assets/fonts/Vazirmatn-Bold.woff2'); ?>') format('woff2');
             font-weight: 700;
             font-style: normal;
         }

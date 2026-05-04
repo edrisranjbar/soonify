@@ -1,0 +1,54 @@
+# Persian (Iran) translation for Soonify plugin
+# Copyright (C) 2026 Edris Ranjbar
+# This file is distributed under the same license as the Soonify plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Soonify 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/edrisranjbar/soonify/issues\n"
+"POT-Creation-Date: 2026-05-01 00:00+0330\n"
+"PO-Revision-Date: 2026-05-04 03:44+0330\n"
+"Last-Translator: Edris Ranjbar <edris.qeshm2@gmail.com>\n"
+"Language-Team: Persian <edris.qeshm2@gmail.com>\n"
+"Language: fa_IR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Poedit 3.4.2\n"
+"X-Domain: soonify\n"
+
+# Plugin Name
+msgid "Soonify - Persian Coming Soon"
+msgstr "Soonify - حالت به زودی فارسی"
+
+# Plugin Description
+msgid "یک افزونه ساده و زیبا برای حالت \"به زودی\" سایت با فونت وزیر"
+msgstr "یک افزونه ساده و زیبا برای حالت \"به زودی\" سایت با فونت وزیر"
+
+# Admin strings
+msgid "Soonify Settings"
+msgstr "تنظیمات Soonify"
+
+msgid "Soonify"
+msgstr "Soonify"
+
+msgid "فعال‌سازی حالت به زودی"
+msgstr "فعال‌سازی حالت به زودی"
+
+msgid "با فعال کردن این گزینه، سایت شما برای بازدیدکنندگان در حالت به زودی نمایش داده می‌شود."
+msgstr "با فعال کردن این گزینه، سایت شما برای بازدیدکنندگان در حالت به زودی نمایش داده می‌شود."
+
+msgid "عنوان"
+msgstr "عنوان"
+
+msgid "توضیحات"
+msgstr "توضیحات"
+
+msgid "رنگ پس‌زمینه"
+msgstr "رنگ پس‌زمینه"
+
+msgid "ذخیره تنظیمات"
+msgstr "ذخیره تنظیمات"
+
+msgid "تنظیمات با موفقیت ذخیره شد."
+msgstr "تنظیمات با موفقیت ذخیره شد."
