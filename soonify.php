@@ -1,12 +1,11 @@
 <?php
 /**
- * Plugin Name: Soonify - Persian Coming Soon
+ * Plugin Name: Soonify - Coming Soon
  * Plugin URI: https://github.com/edrisranjbar/soonify
  * Description: یک افزونه ساده و زیبا برای حالت "به زودی" سایت
  * Version: 1.0.0
  * Author: Edris Ranjbar
  * Author URI: https://edrisranjbar.ir
- * Text Domain: soonify
  * Domain Path: /languages
  * License: GPL2.0
  * Requires at least: 5.0

@@ -1,4 +1,4 @@
-# Soonify - WordPress Persian Coming Soon Plugin
+# Soonify - WordPress Coming Soon Plugin
 
 [![WordPress Version](https://img.shields.io/badge/WordPress-5.0%2B-blue)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-purple)](https://php.net/)
