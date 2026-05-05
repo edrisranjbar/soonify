@@ -6,7 +6,7 @@
 
 A lightweight, clean, and modern Coming Soon plugin for WordPress with full Persian (RTL) language support and local Vazir font integration. Perfect for Iranian WordPress sites under development.
 
-![Soonify Preview](screenshot.png)
+![Soonify Preview](cover.png)
 
 ## ✨ Features
 
