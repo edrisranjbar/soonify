@@ -4,11 +4,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+$bg_type = get_option('soonify_bg_type', 'color');
 $bg_color = get_option('soonify_bg_color', '#f8f9fa');
+$bg_image_id = get_option('soonify_bg_image', 0);
+$bg_image_url = $bg_image_id ? wp_get_attachment_image_src($bg_image_id, 'full')[0] : '';
+$logo_image_id = get_option('soonify_logo_image', 0);
+$logo_url = $logo_image_id ? wp_get_attachment_image_src($logo_image_id, 'full')[0] : (has_custom_logo() ? wp_get_attachment_image_src(get_theme_mod('custom_logo'), 'full')[0] : '');
 $title = get_option('soonify_title', 'به زودی...');
 $description = get_option('soonify_description', 'ما در حال آماده‌سازی سایت هستیم. به زودی با خدمات جدید بازمی‌گردیم.');
 $site_name = get_bloginfo('name');
-$logo_url = has_custom_logo() ? wp_get_attachment_image_src(get_theme_mod('custom_logo'), 'full')[0] : '';
 ?>
 <!DOCTYPE html>
 <html dir="rtl" lang="fa-IR">
@@ -59,7 +63,14 @@ $logo_url = has_custom_logo() ? wp_get_attachment_image_src(get_theme_mod('custo
         
         body {
             font-family: 'Vazir', Tahoma, Arial, sans-serif;
+            <?php if($bg_type === 'image' && $bg_image_url): ?>
+            background-image: url('<?php echo esc_url($bg_image_url); ?>');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            <?php else: ?>
             background-color: <?php echo esc_attr($bg_color); ?>;
+            <?php endif; ?>
             display: flex;
             justify-content: center;
             align-items: center;
@@ -93,7 +104,6 @@ $logo_url = has_custom_logo() ? wp_get_attachment_image_src(get_theme_mod('custo
             height: 120px;
             margin: 0 auto 40px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -101,10 +111,10 @@ $logo_url = has_custom_logo() ? wp_get_attachment_image_src(get_theme_mod('custo
             animation: pulse 2s ease-in-out infinite;
         }
         
-        .soonify-logo svg {
-            width: 60px;
-            height: 60px;
-            fill: white;
+        .soonify-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: fit;
         }
         
         @keyframes pulse {
@@ -193,9 +203,13 @@ $logo_url = has_custom_logo() ? wp_get_attachment_image_src(get_theme_mod('custo
 <body>
     <div class="soonify-container">
         <div class="soonify-logo">
+            <?php if($logo_url): ?>
+            <img src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($site_name); ?>">
+            <?php else: ?>
             <svg viewBox="0 0 24 24">
                 <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>
             </svg>
+            <?php endif; ?>
         </div>
         
         <h1 class="soonify-title"><?php echo esc_html($title); ?></h1>

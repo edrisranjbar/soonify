@@ -52,7 +52,7 @@ final class Soonify {
         // Admin hooks
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_init', array($this, 'register_settings'));
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         
         // Check coming soon mode
         add_action('template_redirect', array($this, 'check_coming_soon'));
@@ -84,6 +84,32 @@ final class Soonify {
             'sanitize_callback' => 'rest_sanitize_boolean'
         ));
         
+        register_setting('soonify_settings_group', 'soonify_bg_type', array(
+            'type' => 'string',
+            'default' => 'color',
+            'sanitize_callback' => function($value) {
+                return in_array($value, ['color', 'image']) ? $value : 'color';
+            }
+        ));
+        
+        register_setting('soonify_settings_group', 'soonify_bg_color', array(
+            'type' => 'string',
+            'default' => '#f8f9fa',
+            'sanitize_callback' => 'sanitize_hex_color'
+        ));
+        
+        register_setting('soonify_settings_group', 'soonify_bg_image', array(
+            'type' => 'integer',
+            'default' => 0,
+            'sanitize_callback' => 'absint'
+        ));
+        
+        register_setting('soonify_settings_group', 'soonify_logo_image', array(
+            'type' => 'integer',
+            'default' => 0,
+            'sanitize_callback' => 'absint'
+        ));
+        
         register_setting('soonify_settings_group', 'soonify_title', array(
             'type' => 'string',
             'default' => 'به زودی...',
@@ -95,15 +121,9 @@ final class Soonify {
             'default' => 'ما در حال آماده‌سازی سایت هستیم. به زودی با خدمات جدید بازمی‌گردیم.',
             'sanitize_callback' => 'wp_kses_post'
         ));
-        
-        register_setting('soonify_settings_group', 'soonify_bg_color', array(
-            'type' => 'string',
-            'default' => '#f8f9fa',
-            'sanitize_callback' => 'sanitize_hex_color'
-        ));
     }
     
-    public function enqueue_admin_styles($hook) {
+    public function enqueue_admin_assets($hook) {
         if ('toplevel_page_soonify-settings' !== $hook) {
             return;
         }
@@ -113,6 +133,17 @@ final class Soonify {
             SOONIFY_PLUGIN_URL . 'assets/css/admin-style.css',
             array(),
             SOONIFY_VERSION
+        );
+        
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_media();
+        wp_enqueue_script('wp-color-picker');
+        wp_enqueue_script(
+            'soonify-admin-js',
+            SOONIFY_PLUGIN_URL . 'assets/js/admin-script.js',
+            array('jquery', 'wp-color-picker'),
+            SOONIFY_VERSION,
+            true
         );
     }
     
@@ -168,6 +199,59 @@ final class Soonify {
                         
                         <tr>
                             <th scope="row">
+                                <label><?php echo esc_html__('نوع پس‌زمینه', 'soonify'); ?></label>
+                            </th>
+                            <td>
+                                <label>
+                                    <input type="radio" name="soonify_bg_type" value="color" <?php checked(get_option('soonify_bg_type', 'color'), 'color'); ?>>
+                                    <?php echo esc_html__('رنگ', 'soonify'); ?>
+                                </label>
+                                <label>
+                                    <input type="radio" name="soonify_bg_type" value="image" <?php checked(get_option('soonify_bg_type', 'image'), 'image'); ?>>
+                                    <?php echo esc_html__('تصویر', 'soonify'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        
+                        <tr class="soonify-bg-color-field">
+                            <th scope="row">
+                                <label for="soonify_bg_color"><?php echo esc_html__('رنگ پس‌زمینه', 'soonify'); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" 
+                                       id="soonify_bg_color" 
+                                       name="soonify_bg_color" 
+                                       value="<?php echo esc_attr(get_option('soonify_bg_color', '#f8f9fa')); ?>" 
+                                       class="soonify-color-picker">
+                            </td>
+                        </tr>
+                        
+                        <tr class="soonify-bg-image-field" style="display:none;">
+                            <th scope="row">
+                                <label for="soonify_bg_image"><?php echo esc_html__('تصویر پس‌زمینه', 'soonify'); ?></label>
+                            </th>
+                            <td>
+                                <input type="hidden" id="soonify_bg_image" name="soonify_bg_image" value="<?php echo esc_attr(get_option('soonify_bg_image', 0)); ?>">
+                                <button type="button" class="button soonify-upload-btn" data-target="soonify_bg_image"><?php echo esc_html__('انتخاب تصویر', 'soonify'); ?></button>
+                                <button type="button" class="button soonify-remove-btn" data-target="soonify_bg_image" style="display:none;"><?php echo esc_html__('حذف تصویر', 'soonify'); ?></button>
+                                <div class="soonify-image-preview" id="soonify_bg_image_preview"></div>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row">
+                                <label for="soonify_logo_image"><?php echo esc_html__('تصویر لوگو (اختیاری)', 'soonify'); ?></label>
+                            </th>
+                            <td>
+                                <input type="hidden" id="soonify_logo_image" name="soonify_logo_image" value="<?php echo esc_attr(get_option('soonify_logo_image', 0)); ?>">
+                                <button type="button" class="button soonify-upload-btn" data-target="soonify_logo_image"><?php echo esc_html__('انتخاب لوگو', 'soonify'); ?></button>
+                                <button type="button" class="button soonify-remove-btn" data-target="soonify_logo_image" style="display:none;"><?php echo esc_html__('حذف لوگو', 'soonify'); ?></button>
+                                <div class="soonify-image-preview" id="soonify_logo_image_preview"></div>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row">
                                 <label for="soonify_title"><?php echo esc_html__('عنوان', 'soonify'); ?></label>
                             </th>
                             <td>
@@ -191,19 +275,6 @@ final class Soonify {
                                           rows="4" 
                                           class="large-text" 
                                           dir="rtl"><?php echo esc_textarea(get_option('soonify_description', '')); ?></textarea>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <th scope="row">
-                                <label for="soonify_bg_color"><?php echo esc_html__('رنگ پس‌زمینه', 'soonify'); ?></label>
-                            </th>
-                            <td>
-                                <input type="text" 
-                                       id="soonify_bg_color" 
-                                       name="soonify_bg_color" 
-                                       value="<?php echo esc_attr(get_option('soonify_bg_color', '#f8f9fa')); ?>" 
-                                       class="soonify-color-picker">
                             </td>
                         </tr>
                     </table>
