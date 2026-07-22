@@ -1,6 +1,26 @@
 jQuery(document).ready(function($){
-    // Initialize color picker
-    $('.soonify-color-picker').wpColorPicker();
+    // Initialize color pickers and keep the palette preview in sync.
+    function updatePalettePreview(input){
+        var id = input.attr('id');
+        var color = input.val();
+        if(id && color){
+            $('[data-color-option="' + id + '"]').css('background-color', color);
+        }
+    }
+
+    $('.soonify-color-picker').each(function(){
+        var input = $(this);
+        input.wpColorPicker({
+            change: function(event, ui){
+                input.val(ui.color.toString());
+                updatePalettePreview(input);
+            },
+            clear: function(){
+                updatePalettePreview(input);
+            }
+        });
+        updatePalettePreview(input);
+    });
 
     // Toggle background fields
     $('input[name="soonify_bg_type"]').change(function(){

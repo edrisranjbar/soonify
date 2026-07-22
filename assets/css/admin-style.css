@@ -7,10 +7,12 @@
 
 .soonify-admin-card {
     background: #fff;
-    border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px 30px 30px;
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
     margin-top: 20px;
+    max-width: 920px;
 }
 
 /* Toggle Switch */
@@ -90,4 +92,43 @@
 
 .form-table td {
     padding: 15px 10px;
+}
+
+.soonify-section-row th {
+    padding-top: 32px;
+    padding-bottom: 10px;
+    border-top: 1px solid #e8edf3;
+}
+
+.soonify-section-row h2 {
+    margin: 0 0 6px;
+    color: #172033;
+    font-size: 18px;
+}
+
+.soonify-palette-preview {
+    display: flex;
+    width: 190px;
+    height: 14px;
+    overflow: hidden;
+    margin-top: 14px;
+    border: 1px solid #dce3eb;
+    border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, .08);
+}
+
+.soonify-palette-preview span {
+    flex: 1;
+}
+
+.soonify-image-preview img {
+    display: block;
+    margin-top: 12px;
+    border-radius: 8px;
+    border: 1px solid #dce3eb;
+}
+
+@media (max-width: 782px) {
+    .soonify-admin-card { padding: 12px 18px 24px; }
+    .form-table th { width: auto; }
 }

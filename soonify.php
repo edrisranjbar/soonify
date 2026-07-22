@@ -3,7 +3,7 @@
  * Plugin Name: Soonify - Coming Soon
  * Plugin URI: https://github.com/edrisranjbar/soonify
  * Description: یک افزونه ساده و زیبا برای حالت "به زودی" سایت
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Edris Ranjbar
  * Author URI: https://edrisranjbar.ir
  * Domain Path: /languages
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SOONIFY_VERSION', '1.0.0');
+define('SOONIFY_VERSION', '1.1.0');
 define('SOONIFY_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SOONIFY_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -53,6 +53,10 @@ final class Soonify {
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_init', array($this, 'register_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
+        add_action('admin_bar_menu', array($this, 'add_admin_bar_toggle'), 100);
+        add_action('admin_post_soonify_toggle_status', array($this, 'toggle_status'));
+        add_action('admin_head', array($this, 'admin_bar_styles'));
+        add_action('wp_head', array($this, 'admin_bar_styles'));
         
         // Check coming soon mode
         add_action('template_redirect', array($this, 'check_coming_soon'));
@@ -97,6 +101,21 @@ final class Soonify {
             'default' => '#f8f9fa',
             'sanitize_callback' => 'sanitize_hex_color'
         ));
+
+        $color_settings = array(
+            'soonify_accent_color' => '#6c63ff',
+            'soonify_title_color'  => '#172033',
+            'soonify_text_color'   => '#667085',
+            'soonify_card_color'   => '#ffffff',
+        );
+
+        foreach ($color_settings as $option => $default) {
+            register_setting('soonify_settings_group', $option, array(
+                'type' => 'string',
+                'default' => $default,
+                'sanitize_callback' => 'sanitize_hex_color',
+            ));
+        }
         
         register_setting('soonify_settings_group', 'soonify_bg_image', array(
             'type' => 'integer',
@@ -121,6 +140,63 @@ final class Soonify {
             'default' => 'ما در حال آماده‌سازی سایت هستیم. به زودی با خدمات جدید بازمی‌گردیم.',
             'sanitize_callback' => 'wp_kses_post'
         ));
+    }
+
+    public function add_admin_bar_toggle($admin_bar) {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        $is_active = (bool) get_option('soonify_active', false);
+        $toggle_url = wp_nonce_url(
+            admin_url('admin-post.php?action=soonify_toggle_status'),
+            'soonify_toggle_status'
+        );
+
+        $admin_bar->add_node(array(
+            'id' => 'soonify-status-toggle',
+            'parent' => 'top-secondary',
+            'title' => sprintf(
+                '<span class="soonify-admin-bar-dot" aria-hidden="true"></span><span>%s</span>',
+                esc_html($is_active ? __('Soonify: فعال', 'soonify') : __('Soonify: غیرفعال', 'soonify'))
+            ),
+            'href' => $toggle_url,
+            'meta' => array(
+                'class' => $is_active ? 'soonify-is-active' : 'soonify-is-inactive',
+                'title' => esc_attr($is_active ? __('غیرفعال کردن حالت به زودی', 'soonify') : __('فعال کردن حالت به زودی', 'soonify')),
+            ),
+        ));
+    }
+
+    public function toggle_status() {
+        if (!current_user_can('manage_options')) {
+            wp_die(
+                esc_html__('شما اجازه تغییر این تنظیم را ندارید.', 'soonify'),
+                esc_html__('دسترسی غیرمجاز', 'soonify'),
+                array('response' => 403)
+            );
+        }
+
+        check_admin_referer('soonify_toggle_status');
+        update_option('soonify_active', !((bool) get_option('soonify_active', false)));
+
+        $redirect_url = wp_get_referer();
+        wp_safe_redirect($redirect_url ? $redirect_url : admin_url('admin.php?page=soonify-settings'));
+        exit;
+    }
+
+    public function admin_bar_styles() {
+        if (!is_admin_bar_showing() || !current_user_can('manage_options')) {
+            return;
+        }
+        ?>
+        <style id="soonify-admin-bar-styles">
+            #wpadminbar #wp-admin-bar-soonify-status-toggle .ab-item { display:flex; align-items:center; gap:7px; }
+            #wpadminbar .soonify-admin-bar-dot { width:8px; height:8px; border-radius:50%; background:#9ca3af; box-shadow:0 0 0 3px rgba(156,163,175,.18); }
+            #wpadminbar .soonify-is-active .soonify-admin-bar-dot { background:#22c55e; box-shadow:0 0 0 3px rgba(34,197,94,.2); }
+            #wpadminbar #wp-admin-bar-soonify-status-toggle .ab-item:hover { background:#263142; }
+        </style>
+        <?php
     }
     
     public function enqueue_admin_assets($hook) {
@@ -237,6 +313,40 @@ final class Soonify {
                                 <div class="soonify-image-preview" id="soonify_bg_image_preview"></div>
                             </td>
                         </tr>
+
+                        <tr class="soonify-section-row">
+                            <th colspan="2">
+                                <h2><?php echo esc_html__('رنگ‌های قالب', 'soonify'); ?></h2>
+                                <p class="description"><?php echo esc_html__('رنگ‌های صفحه به زودی را با برند خود هماهنگ کنید.', 'soonify'); ?></p>
+                                <div class="soonify-palette-preview" aria-hidden="true">
+                                    <span data-color-option="soonify_accent_color"></span>
+                                    <span data-color-option="soonify_title_color"></span>
+                                    <span data-color-option="soonify_text_color"></span>
+                                    <span data-color-option="soonify_card_color"></span>
+                                </div>
+                            </th>
+                        </tr>
+
+                        <?php
+                        $soonify_color_fields = array(
+                            'soonify_accent_color' => array(__('رنگ اصلی', 'soonify'), '#6c63ff'),
+                            'soonify_title_color'  => array(__('رنگ عنوان', 'soonify'), '#172033'),
+                            'soonify_text_color'   => array(__('رنگ متن توضیحات', 'soonify'), '#667085'),
+                            'soonify_card_color'   => array(__('رنگ پنل', 'soonify'), '#ffffff'),
+                        );
+                        foreach ($soonify_color_fields as $field_id => $field_data) :
+                        ?>
+                        <tr>
+                            <th scope="row"><label for="<?php echo esc_attr($field_id); ?>"><?php echo esc_html($field_data[0]); ?></label></th>
+                            <td>
+                                <input type="text"
+                                       id="<?php echo esc_attr($field_id); ?>"
+                                       name="<?php echo esc_attr($field_id); ?>"
+                                       value="<?php echo esc_attr(get_option($field_id, $field_data[1])); ?>"
+                                       class="soonify-color-picker">
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
                         
                         <tr>
                             <th scope="row">
